@@ -16,7 +16,7 @@ func NewRedisClient(host string, port uint16, password string) (*RedisClient, er
 	var addr bytes.Buffer
 	addr.WriteString(host)
 	addr.WriteString(":")
-	addr.WriteString(string(port))
+	addr.WriteString(strconv.Itoa(int(port)))
 
 	conn, err := redis.Dial("tcp", addr.String())
 	if err != nil {
