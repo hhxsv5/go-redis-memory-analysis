@@ -4,7 +4,7 @@ import (
 	"strings"
 	"fmt"
 	"strconv"
-	. "./models"
+	. "models"
 )
 
 type Report struct {
