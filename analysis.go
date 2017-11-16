@@ -45,16 +45,22 @@ func (analysis *Analysis) Start(delimiters []string, limit uint64) {
 			fd, fp, tmp, nk, ttl = "", 0, 0, "", 0
 			for _, delimiter := range delimiters {
 				tmp = strings.Index(key, delimiter)
-				if tmp != -1 && tmp < fp {
+				if tmp != -1 && (tmp < fp || fp == 0) {
 					fd, fp = delimiter, tmp
 				}
+			}
+
+
+			if fp == 0 {
+				continue
 			}
 
 			if _, ok := analysis.Reports[db]; !ok {
 				analysis.Reports[db] = map[string]Report{}
 			}
 
-			nk = key[fp:] + fd + "*"
+
+			nk = key[0:fp] + fd + "*"
 
 			if _, ok := analysis.Reports[db][nk]; ok {
 				r = analysis.Reports[db][nk]
@@ -62,7 +68,7 @@ func (analysis *Analysis) Start(delimiters []string, limit uint64) {
 				r = Report{nk, 1, 0, 0, 0}
 			}
 
-			ttl, _ = analysis.redis.Ttl(nk)
+			ttl, _ = analysis.redis.Ttl(key)
 
 			switch ttl {
 			case -2:
