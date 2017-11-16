@@ -57,7 +57,7 @@ func (client RedisClient) GetDatabases() (map[uint64]string, error) {
 }
 
 func (client RedisClient) Scan(cursor *uint64, match string, limit uint64) ([]string, error) {
-	reply, err := client.conn.Do("SCAN", cursor, match, limit)
+	reply, err := client.conn.Do("SCAN", *cursor, "MATCH", match, "COUNT", limit)
 	result, err := redis.Values(reply, err)
 
 	var keys []string
