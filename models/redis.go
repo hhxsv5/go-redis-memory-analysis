@@ -80,6 +80,8 @@ func (client RedisClient) Ttl(key string) (int64, error) {
 }
 
 func (client RedisClient) SerializedLength(key string) (uint64, error) {
+	return 0, nil
+	//todo
 	reply, err := client.conn.Do("DEBUG", "OBJECT", key)
 	debug, err := redis.String(reply, err)
 	debugs := strings.Split(debug, " ")
