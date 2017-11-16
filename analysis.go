@@ -45,7 +45,7 @@ func (analysis *Analysis) Start(delimiters []string, limit uint64) {
 			fd, fp, tmp, nk, ttl = "", 0, 0, "", 0
 			for _, delimiter := range delimiters {
 				tmp = strings.Index(key, delimiter)
-				if tmp < fp {
+				if tmp != -1 && tmp < fp {
 					fd, fp = delimiter, tmp
 				}
 			}

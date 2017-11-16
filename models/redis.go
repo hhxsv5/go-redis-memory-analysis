@@ -64,9 +64,9 @@ func (client RedisClient) Scan(cursor *uint64, match string, limit uint64) ([]st
 
 	for _, v := range result {
 		switch v.(type) {
-		case uint8:
+		case []uint8:
 			*cursor, _ = redis.Uint64(v, nil)
-		case []string:
+		case []interface{}:
 			keys, _ = redis.Strings(v, nil)
 		}
 	}
