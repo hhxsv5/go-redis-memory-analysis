@@ -9,7 +9,7 @@ import (
 )
 
 type RedisClient struct {
-	conn
+	conn redis.Conn
 }
 
 func NewRedisClient(host string, port uint16, password string) (*RedisClient, error) {
