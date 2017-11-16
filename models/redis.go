@@ -35,15 +35,22 @@ func NewRedisClient(host string, port uint16, password string) (*RedisClient, er
 	return &RedisClient{conn}, err
 }
 
-func (client RedisClient) GetDatabases() ([]string, error) {
+func (client RedisClient) GetDatabases() (map[uint64]string, error) {
+	var databases = make(map[uint64]string)
+
 	reply, err := client.conn.Do("INFO", "Keyspace")
-	dbs, err := redis.Strings(reply, err)
+	keyspace, err := redis.String(reply, err)
+	keyspace = strings.Trim(keyspace[12:], "\n")
+	keyspaces := strings.Split(keyspace, "\r")
 
-	var databases []string
-
-	for _, db := range dbs {
+	for _, db := range keyspaces {
 		strs := strings.Split(db, ":")
-		dbi, _ := strconv.Atoi(strs[0][2:])
+		strs[0] = strings.Trim(strs[0], "\n")
+		if strs[0] == "" {
+			continue
+		}
+
+		dbi, _ := strconv.ParseUint(strs[0][2:], 10, 64)
 		databases[dbi] = strs[1]
 	}
 	return databases, err

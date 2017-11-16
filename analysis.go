@@ -17,11 +17,11 @@ type Report struct {
 
 type Analysis struct {
 	redis   *RedisClient
-	Reports map[int]map[string]Report
+	Reports map[uint64]map[string]Report
 }
 
 func NewAnalysis(redis *RedisClient) (*Analysis) {
-	return &Analysis{redis, map[int]map[string]Report{}}
+	return &Analysis{redis, map[uint64]map[string]Report{}}
 }
 
 func (analysis *Analysis) Start(delimiters []string, limit uint64) {
@@ -29,17 +29,20 @@ func (analysis *Analysis) Start(delimiters []string, limit uint64) {
 	match := "*[" + strings.Join(delimiters, "") + "]*"
 	databases, _ := analysis.redis.GetDatabases()
 
+	var cursor uint64
+	var r Report
+	var f float64
+	var ttl int64
+	var length uint64
+
 	for db, _ := range databases {
-		var cursor uint64 = 0
+		cursor = 0
+
 		keys, _ := analysis.redis.Scan(&cursor, match, 3000)
 
 		fd, fp, tmp, nk := "", 0, 0, ""
-		var r Report
-		var f float64
-		var ttl int64
-		var length uint64
 		for _, key := range keys {
-			fd, fp, tmp, nk, ttl, ne = "", 0, 0, "", 0, 0
+			fd, fp, tmp, nk, ttl = "", 0, 0, "", 0
 			for _, delimiter := range delimiters {
 				tmp = strings.Index(key, delimiter)
 				if tmp < fp {
