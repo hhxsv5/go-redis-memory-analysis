@@ -4,7 +4,7 @@ import (
 	"strings"
 	"fmt"
 	"strconv"
-	. "./models"
+	. "github.com/hhxsv5/go-redis-memory-analysis/models"
 )
 
 type Report struct {
