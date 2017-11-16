@@ -4,6 +4,7 @@ import (
 	"strings"
 	"fmt"
 	"strconv"
+	"github.com/hhxsv5/go-redis-memory-analysis/src/models"
 )
 
 type Report struct {
@@ -15,7 +16,7 @@ type Report struct {
 }
 
 type Analysis struct {
-	redis   RedisClient
+	redis   RedisCliet
 	Reports map[int]map[string]Report
 }
 
