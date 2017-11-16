@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	. "github.com/hhxsv5/go-redis-memory-analysis/src/models"
-	. "github.com/hhxsv5/go-redis-memory-analysis/src"
+	. "github.com/hhxsv5/go-redis-memory-analysis/models"
+	. "github.com/hhxsv5/go-redis-memory-analysis"
 )
 
 func main() {
