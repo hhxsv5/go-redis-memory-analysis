@@ -24,7 +24,7 @@ func NewAnalysis(redis *RedisClient) (*Analysis) {
 	return &Analysis{redis, map[int]map[string]Report{}}
 }
 
-func (analysis *Analysis) start(delimiters []string, limit uint64) {
+func (analysis *Analysis) Start(delimiters []string, limit uint64) {
 	match := "*[" + strings.Join(delimiters, "") + "]*"
 	cursor := 0
 	keys := analysis.redis.Scan(&cursor, match, 3000)
