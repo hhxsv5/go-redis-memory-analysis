@@ -66,13 +66,13 @@ func (client RedisClient) Scan(cursor *uint64, match string, limit uint64) ([]st
 	return keys, err
 }
 
-func (client RedisClient) Ttl(key string) (uint64, error) {
+func (client RedisClient) Ttl(key string) (int64, error) {
 	reply, err := client.conn.Do("TTL", key)
-	ttl, err := redis.Uint64(reply, err)
+	ttl, err := redis.Int64(reply, err)
 	return ttl, err
 }
 
-func (client RedisClient) SerializedLength(key string) (int, error) {
+func (client RedisClient) SerializedLength(key string) (uint64, error) {
 	reply, err := client.conn.Do("DEBUG", "OBJECT", key)
 	debug, err := redis.String(reply, err)
 	debugs := strings.Split(debug, " ")
@@ -80,5 +80,5 @@ func (client RedisClient) SerializedLength(key string) (int, error) {
 	if err != nil {
 		return 0, err
 	}
-	return strconv.Atoi(items[1])
+	return strconv.ParseUint(items[1], 10, 64)
 }

@@ -4,7 +4,7 @@ import (
 	"strings"
 	"fmt"
 	"strconv"
-	"./models/RedisClient"
+	. "./models"
 )
 
 type Report struct {
@@ -16,7 +16,7 @@ type Report struct {
 }
 
 type Analysis struct {
-	redis   RedisClient
+	redis   *RedisClient
 	Reports map[int]map[string]Report
 }
 
@@ -26,8 +26,8 @@ func NewAnalysis(redis *RedisClient) (*Analysis) {
 
 func (analysis *Analysis) Start(delimiters []string, limit uint64) {
 	match := "*[" + strings.Join(delimiters, "") + "]*"
-	cursor := 0
-	keys := analysis.redis.Scan(&cursor, match, 3000)
+	var cursor uint64 = 0
+	keys, _ := analysis.redis.Scan(&cursor, match, 3000)
 
 	fd, fp, tmp, nk := "", 0, 0, ""
 	var r Report
