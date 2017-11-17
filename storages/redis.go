@@ -36,6 +36,11 @@ func NewRedisClient(host string, port uint16, password string) (*RedisClient, er
 	return &RedisClient{addr.String(), conn}, err
 }
 
+func (client RedisClient) Select(db uint64) error {
+	_, err := client.conn.Do("SELECT", db)
+	return err
+}
+
 func (client RedisClient) GetDatabases() (map[uint64]string, error) {
 	var databases = make(map[uint64]string)
 

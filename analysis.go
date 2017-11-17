@@ -4,8 +4,9 @@ import (
 	"strings"
 	"fmt"
 	"strconv"
-	. "github.com/hhxsv5/go-redis-memory-analysis/storages"
 	"os"
+	. "github.com/hhxsv5/go-redis-memory-analysis/storages"
+	"sort"
 )
 
 type Report struct {
@@ -18,11 +19,25 @@ type Report struct {
 
 type Analysis struct {
 	redis   *RedisClient
-	Reports map[uint64]map[string]Report
+	Reports map[uint64][]Report
+}
+
+type SortReports []Report
+
+func (sr SortReports) Len() int {
+	return len(sr)
+}
+
+func (sr SortReports) Less(i, j int) bool {
+	return sr[i].Size > sr[j].Size
+}
+
+func (sr SortReports) Swap(i, j int) {
+	sr[i], sr[j] = sr[j], sr[i]
 }
 
 func NewAnalysis(redis *RedisClient) (*Analysis) {
-	return &Analysis{redis, map[uint64]map[string]Report{}}
+	return &Analysis{redis, map[uint64][]Report{}}
 }
 
 func (analysis Analysis) Start(delimiters []string, limit uint64) {
@@ -35,9 +50,14 @@ func (analysis Analysis) Start(delimiters []string, limit uint64) {
 	var f float64
 	var ttl int64
 	var length uint64
+	var sr SortReports
+	var mr map[string]Report
 
 	for db, _ := range databases {
 		cursor = 0
+		mr = map[string]Report{}
+
+		analysis.redis.Select(db)
 
 		keys, _ := analysis.redis.Scan(&cursor, match, 3000)
 
@@ -55,14 +75,10 @@ func (analysis Analysis) Start(delimiters []string, limit uint64) {
 				continue
 			}
 
-			if _, ok := analysis.Reports[db]; !ok {
-				analysis.Reports[db] = map[string]Report{}
-			}
-
 			nk = key[0:fp] + fd + "*"
 
-			if _, ok := analysis.Reports[db][nk]; ok {
-				r = analysis.Reports[db][nk]
+			if _, ok := mr[nk]; ok {
+				r = mr[nk]
 			} else {
 				r = Report{nk, 1, 0, 0, 0}
 			}
@@ -84,8 +100,18 @@ func (analysis Analysis) Start(delimiters []string, limit uint64) {
 			length, _ = analysis.redis.SerializedLength(key)
 			r.Size += length
 
-			analysis.Reports[db][nk] = r
+			mr[nk] = r
 		}
+		fmt.Println(mr)
+
+		//Sort by size
+		sr = SortReports{}
+		for _, report := range mr {
+			sr = append(sr, report)
+		}
+		sort.Sort(sr)
+
+		analysis.Reports[db] = sr
 	}
 }
 
@@ -104,8 +130,8 @@ func (analysis Analysis) SaveReports(folder string) (error) {
 			return err
 		}
 		fp.Append([]byte("Key,Count,Size,NeverExpire,AvgTtl(excluded never expire)\n"))
-		for key, value := range reports {
-			str = fmt.Sprintf("%s,%d,%d,%d,%d\n", key, value.Count, value.Size, value.NeverExpire, value.AvgTtl)
+		for _, value := range reports {
+			str = fmt.Sprintf("%s,%d,%d,%d,%d\n", value.Key, value.Count, value.Size, value.NeverExpire, value.AvgTtl)
 			fp.Append([]byte(str))
 		}
 		fp.Close()
