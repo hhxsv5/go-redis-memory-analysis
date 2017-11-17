@@ -102,7 +102,6 @@ func (analysis Analysis) Start(delimiters []string, limit uint64) {
 
 			mr[nk] = r
 		}
-		fmt.Println(mr)
 
 		//Sort by size
 		sr = SortReports{}
