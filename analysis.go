@@ -81,7 +81,7 @@ func (analysis Analysis) Start(delimiters []string, limit uint64) {
 				r.Count++
 			}
 
-			length, _ = analysis.redis.SerializedLength(nk)
+			length, _ = analysis.redis.SerializedLength(key)
 			r.Size += length
 
 			analysis.Reports[db][nk] = r
