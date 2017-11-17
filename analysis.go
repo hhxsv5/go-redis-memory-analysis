@@ -1,12 +1,12 @@
 package gorma
 
 import (
-	"strings"
 	"fmt"
-	"strconv"
-	"os"
 	. "github.com/hhxsv5/go-redis-memory-analysis/storages"
+	"os"
 	"sort"
+	"strconv"
+	"strings"
 )
 
 type Report struct {
@@ -36,7 +36,7 @@ func (sr SortReports) Swap(i, j int) {
 	sr[i], sr[j] = sr[j], sr[i]
 }
 
-func NewAnalysis(redis *RedisClient) (*Analysis) {
+func NewAnalysis(redis *RedisClient) *Analysis {
 	return &Analysis{redis, map[uint64][]Report{}}
 }
 
@@ -90,6 +90,7 @@ func (analysis Analysis) Start(delimiters []string, limit uint64) {
 				continue
 			case -1:
 				r.NeverExpire++
+				r.Count++
 			default:
 				f = float64(r.AvgTtl*(r.Count-r.NeverExpire)+uint64(ttl)) / float64(r.Count+1)
 				ttl, _ := strconv.ParseUint(fmt.Sprintf("%0.0f", f), 10, 64)
@@ -114,7 +115,7 @@ func (analysis Analysis) Start(delimiters []string, limit uint64) {
 	}
 }
 
-func (analysis Analysis) SaveReports(folder string) (error) {
+func (analysis Analysis) SaveReports(folder string) error {
 	if _, err := os.Stat(folder); os.IsNotExist(err) {
 		os.MkdirAll(folder, os.ModePerm)
 	}
