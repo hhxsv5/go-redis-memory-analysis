@@ -80,7 +80,7 @@ func (analysis Analysis) Start(delimiters []string, limit uint64) {
 			if _, ok := mr[nk]; ok {
 				r = mr[nk]
 			} else {
-				r = Report{nk, 1, 0, 0, 0}
+				r = Report{nk, 0, 0, 0, 0}
 			}
 
 			ttl, _ = analysis.redis.Ttl(key)
