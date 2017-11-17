@@ -101,10 +101,10 @@ func (analysis Analysis) SaveReports(folder string) {
 	for db, reports := range analysis.Reports {
 		filename = fmt.Sprintf(template, db)
 		fp = NewFile(filename)
-		fp.Append([]byte("Key,Count,Size,NeverExpire,AvgTtl(excluded never expire)\n"), os.ModePerm)
+		fp.Append([]byte("Key,Count,Size,NeverExpire,AvgTtl(excluded never expire)\n"), os.ModePerm, true)
 		for key, value := range reports {
 			str = fmt.Sprintf("%s,%d,%d,%d,%d\n", key, value.Count, value.Size, value.NeverExpire, value.AvgTtl)
-			fp.Append([]byte(str), os.ModePerm)
+			fp.Append([]byte(str), os.ModePerm, false)
 		}
 	}
 }
