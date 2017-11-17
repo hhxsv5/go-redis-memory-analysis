@@ -89,7 +89,7 @@ func (analysis Analysis) Start(delimiters []string, limit uint64) {
 	}
 }
 
-func (analysis Analysis) SaveReports(folder string) {
+func (analysis Analysis) SaveReports(folder string) (error) {
 	if _, err := os.Stat(folder); os.IsNotExist(err) {
 		os.MkdirAll(folder, os.ModePerm)
 	}
@@ -97,14 +97,18 @@ func (analysis Analysis) SaveReports(folder string) {
 	var template = fmt.Sprintf("%s%sredis-analysis-%s%s", folder, string(os.PathSeparator), analysis.redis.Id, "-%d.csv")
 	var str string
 	var filename string
-	var fp *File
 	for db, reports := range analysis.Reports {
 		filename = fmt.Sprintf(template, db)
-		fp = NewFile(filename)
-		fp.Append([]byte("Key,Count,Size,NeverExpire,AvgTtl(excluded never expire)\n"), os.ModePerm, true)
+		fp, err := NewFile(filename, os.O_CREATE|os.O_WRONLY, os.ModePerm)
+		if err != nil {
+			return err
+		}
+		fp.Append([]byte("Key,Count,Size,NeverExpire,AvgTtl(excluded never expire)\n"))
 		for key, value := range reports {
 			str = fmt.Sprintf("%s,%d,%d,%d,%d\n", key, value.Count, value.Size, value.NeverExpire, value.AvgTtl)
-			fp.Append([]byte(str), os.ModePerm, false)
+			fp.Append([]byte(str))
 		}
+		fp.Close()
 	}
+	return nil
 }
