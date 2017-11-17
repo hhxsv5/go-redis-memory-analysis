@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strconv"
 	. "github.com/hhxsv5/go-redis-memory-analysis/storages"
+	"os"
 )
 
 type Report struct {
@@ -24,7 +25,7 @@ func NewAnalysis(redis *RedisClient) (*Analysis) {
 	return &Analysis{redis, map[uint64]map[string]Report{}}
 }
 
-func (analysis *Analysis) Start(delimiters []string, limit uint64) {
+func (analysis Analysis) Start(delimiters []string, limit uint64) {
 
 	match := "*[" + strings.Join(delimiters, "") + "]*"
 	databases, _ := analysis.redis.GetDatabases()
@@ -84,6 +85,26 @@ func (analysis *Analysis) Start(delimiters []string, limit uint64) {
 			r.Size += length
 
 			analysis.Reports[db][nk] = r
+		}
+	}
+}
+
+func (analysis Analysis) SaveReports(folder string) {
+	if _, err := os.Stat(folder); os.IsNotExist(err) {
+		os.MkdirAll(folder, os.ModePerm)
+	}
+
+	var template = fmt.Sprintf("%s%sredis-analysis-%s%s", folder, string(os.PathSeparator), analysis.redis.Id, "-%d.csv")
+	var str string
+	var filename string
+	var fp *File
+	for db, reports := range analysis.Reports {
+		filename = fmt.Sprintf(template, db)
+		fp = NewFile(filename)
+		fp.Append([]byte("Key,Count,Size,NeverExpire,AvgTtl(excluded never expire)\n"), os.ModePerm)
+		for key, value := range reports {
+			str = fmt.Sprintf("%s,%d,%d,%d,%d\n", key, value.Count, value.Size, value.NeverExpire, value.AvgTtl)
+			fp.Append([]byte(str), os.ModePerm)
 		}
 	}
 }

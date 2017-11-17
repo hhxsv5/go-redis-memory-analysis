@@ -9,6 +9,7 @@ import (
 )
 
 type RedisClient struct {
+	Id   string
 	conn redis.Conn
 }
 
@@ -32,7 +33,7 @@ func NewRedisClient(host string, port uint16, password string) (*RedisClient, er
 		}
 	}
 
-	return &RedisClient{conn}, err
+	return &RedisClient{addr.String(), conn}, err
 }
 
 func (client RedisClient) GetDatabases() (map[uint64]string, error) {

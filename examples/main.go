@@ -15,7 +15,8 @@ func main() {
 	defer redis.Close()
 
 	analysis := NewAnalysis(redis)
+
 	analysis.Start([]string{"#", ":"}, 3000)
 
-	fmt.Println(analysis.Reports)
+	analysis.SaveReports("./reports")
 }
