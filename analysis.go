@@ -50,7 +50,6 @@ func (analysis *Analysis) Start(delimiters []string, limit uint64) {
 				}
 			}
 
-
 			if fp == 0 {
 				continue
 			}
@@ -58,7 +57,6 @@ func (analysis *Analysis) Start(delimiters []string, limit uint64) {
 			if _, ok := analysis.Reports[db]; !ok {
 				analysis.Reports[db] = map[string]Report{}
 			}
-
 
 			nk = key[0:fp] + fd + "*"
 

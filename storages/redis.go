@@ -6,7 +6,6 @@ import (
 	"bytes"
 	"strings"
 	"strconv"
-	"runtime"
 )
 
 type RedisClient struct {
@@ -33,13 +32,7 @@ func NewRedisClient(host string, port uint16, password string) (*RedisClient, er
 		}
 	}
 
-	client := &RedisClient{conn}
-
-	runtime.SetFinalizer(client, func(client *RedisClient) {
-		client.conn.Close()
-	})
-
-	return client, err
+	return &RedisClient{conn}, err
 }
 
 func (client RedisClient) GetDatabases() (map[uint64]string, error) {
@@ -97,4 +90,8 @@ func (client RedisClient) SerializedLength(key string) (uint64, error) {
 		return 0, err
 	}
 	return strconv.ParseUint(items[1], 10, 64)
+}
+
+func (client RedisClient) Close() (error) {
+	return client.conn.Close()
 }

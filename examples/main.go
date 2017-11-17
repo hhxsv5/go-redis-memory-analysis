@@ -12,6 +12,8 @@ func main() {
 		fmt.Println("Connect redis fail", err)
 		return
 	}
+	defer redis.Close()
+
 	analysis := NewAnalysis(redis)
 	analysis.Start([]string{"#", ":"}, 3000)
 
