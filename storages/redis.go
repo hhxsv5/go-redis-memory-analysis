@@ -1,4 +1,4 @@
-package models
+package storages
 
 import (
 	"github.com/garyburd/redigo/redis"
@@ -6,6 +6,7 @@ import (
 	"bytes"
 	"strings"
 	"strconv"
+	"runtime"
 )
 
 type RedisClient struct {
@@ -32,7 +33,13 @@ func NewRedisClient(host string, port uint16, password string) (*RedisClient, er
 		}
 	}
 
-	return &RedisClient{conn}, err
+	client := &RedisClient{conn}
+
+	runtime.SetFinalizer(client, func(client *RedisClient) {
+		client.conn.Close()
+	})
+
+	return client, err
 }
 
 func (client RedisClient) GetDatabases() (map[uint64]string, error) {
