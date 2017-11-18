@@ -92,7 +92,7 @@ func (analysis Analysis) Start(delimiters []string, limit uint64) {
 					r.NeverExpire++
 					r.Count++
 				default:
-					f = float64(r.AvgTtl*(r.Count-r.NeverExpire)+uint64(ttl)) / float64(r.Count+1)
+					f = float64(r.AvgTtl*(r.Count-r.NeverExpire)+uint64(ttl)) / float64(r.Count-r.NeverExpire)
 					ttl, _ := strconv.ParseUint(fmt.Sprintf("%0.0f", f), 10, 64)
 					r.AvgTtl = ttl
 					r.Count++
