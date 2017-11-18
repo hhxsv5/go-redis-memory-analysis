@@ -1,0 +1,45 @@
+Key,Count,Size,NeverExpire,AvgTtl(excluded never expire)
+up:*,12291,6.330 MB,11644,5242201
+wallet-cache:*,15444,2.669 MB,0,311250
+ylt:*,8753,1.923 MB,42,1024882
+casem#*,54727,1019.871 KB,54727,0
+mp:*,3081,912.626 KB,0,2300298
+question#*,25580,476.006 KB,25580,0
+user_contact:*,348,470.814 KB,348,0
+sync#*,56,293.305 KB,56,0
+headline:*,461,195.512 KB,461,0
+live#*,6788,128.291 KB,6780,1076099
+laravel:*,79,22.821 KB,0,214774
+spreadArea#*,74,18.101 KB,74,0
+uf:*,270,17.626 KB,270,0
+activityTpl#*,14,15.057 KB,14,0
+ufr:*,24,13.656 KB,24,0
+video#*,431,12.181 KB,431,0
+spreadUser#*,23,10.242 KB,23,0
+answer#*,199,8.712 KB,199,0
+userTopic#*,255,4.771 KB,255,0
+wx#*,8,2.529 KB,0,411815
+sectionTree#*,1,2.397 KB,1,0
+friend:*,39,1.334 KB,39,0
+topic#*,44,849.000 Bytes,44,0
+gfeedNewInx#*,152,760.000 Bytes,152,0
+gfeedRecInx#*,76,380.000 Bytes,76,0
+selectedCategoryRedis#*,150,300.000 Bytes,150,0
+userIntegral:*,1,296.000 Bytes,1,0
+etcd:*,1,271.000 Bytes,1,0
+gfeedHotInx#*,104,266.000 Bytes,104,0
+ws#*,1,82.000 Bytes,1,0
+recomment#*,2,30.000 Bytes,2,0
+ubl:*,1,24.000 Bytes,1,0
+vote#*,1,24.000 Bytes,1,0
+selected#*,2,15.000 Bytes,0,12405274
+voteUser#*,1,13.000 Bytes,1,0
+passport:*,3,6.000 Bytes,0,1664
+med_im:*,1,3.000 Bytes,0,70136
+helpAreaList#*,1,2.000 Bytes,1,0
+es,1,0
+selected#*,2,15-15.000-Bytes,0,12406594
+voteUser#*,1,13-13.000-Bytes,1,0
+passport:*,3,6-6.000-Bytes,0,2985
+med_im:*,1,3-3.000-Bytes,0,71458
+helpAreaList#*,1,2-2.000-Bytes,1,0
