@@ -59,49 +59,54 @@ func (analysis Analysis) Start(delimiters []string, limit uint64) {
 
 		analysis.redis.Select(db)
 
-		keys, _ := analysis.redis.Scan(&cursor, match, 3000)
-
-		fd, fp, tmp, nk := "", 0, 0, ""
-		for _, key := range keys {
-			fd, fp, tmp, nk, ttl = "", 0, 0, "", 0
-			for _, delimiter := range delimiters {
-				tmp = strings.Index(key, delimiter)
-				if tmp != -1 && (tmp < fp || fp == 0) {
-					fd, fp = delimiter, tmp
+		for {
+			keys, _ := analysis.redis.Scan(&cursor, match, 3000)
+			fd, fp, tmp, nk := "", 0, 0, ""
+			for _, key := range keys {
+				fd, fp, tmp, nk, ttl = "", 0, 0, "", 0
+				for _, delimiter := range delimiters {
+					tmp = strings.Index(key, delimiter)
+					if tmp != -1 && (tmp < fp || fp == 0) {
+						fd, fp = delimiter, tmp
+					}
 				}
+
+				if fp == 0 {
+					continue
+				}
+
+				nk = key[0:fp] + fd + "*"
+
+				if _, ok := mr[nk]; ok {
+					r = mr[nk]
+				} else {
+					r = Report{nk, 0, 0, 0, 0}
+				}
+
+				ttl, _ = analysis.redis.Ttl(key)
+
+				switch ttl {
+				case -2:
+					continue
+				case -1:
+					r.NeverExpire++
+					r.Count++
+				default:
+					f = float64(r.AvgTtl*(r.Count-r.NeverExpire)+uint64(ttl)) / float64(r.Count+1)
+					ttl, _ := strconv.ParseUint(fmt.Sprintf("%0.0f", f), 10, 64)
+					r.AvgTtl = ttl
+					r.Count++
+				}
+
+				length, _ = analysis.redis.SerializedLength(key)
+				r.Size += length
+
+				mr[nk] = r
 			}
 
-			if fp == 0 {
-				continue
+			if cursor == 0 {
+				break
 			}
-
-			nk = key[0:fp] + fd + "*"
-
-			if _, ok := mr[nk]; ok {
-				r = mr[nk]
-			} else {
-				r = Report{nk, 0, 0, 0, 0}
-			}
-
-			ttl, _ = analysis.redis.Ttl(key)
-
-			switch ttl {
-			case -2:
-				continue
-			case -1:
-				r.NeverExpire++
-				r.Count++
-			default:
-				f = float64(r.AvgTtl*(r.Count-r.NeverExpire)+uint64(ttl)) / float64(r.Count+1)
-				ttl, _ := strconv.ParseUint(fmt.Sprintf("%0.0f", f), 10, 64)
-				r.AvgTtl = ttl
-				r.Count++
-			}
-
-			length, _ = analysis.redis.SerializedLength(key)
-			r.Size += length
-
-			mr[nk] = r
 		}
 
 		//Sort by size
