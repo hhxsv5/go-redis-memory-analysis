@@ -1,0 +1,7 @@
+Key,Count,Size,NeverExpire,AvgTtl(excluded never expire)
+mp:*,3,694.000 Bytes,1,1179725
+ylt:*,2,566.000 Bytes,1,558102
+a#*,2,5.000 Bytes,2,0
+ylt#*,1,2.000 Bytes,1,0
+-Bytes,1,0
+0-Bytes,1,0

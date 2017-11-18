@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	. "github.com/hhxsv5/go-redis-memory-analysis/storages"
 	. "github.com/hhxsv5/go-redis-memory-analysis"
+	. "github.com/hhxsv5/go-redis-memory-analysis/storages"
 )
 
 func main() {
@@ -16,7 +16,12 @@ func main() {
 
 	analysis := NewAnalysis(redis)
 
+	//Scan the keys which can be split by '#' ':'
+	//special pattern characters need to escape by '\'
 	analysis.Start([]string{"#", ":"}, 3000)
 
+	//Find the csv file in default target folder: ./reports
+	//CSV file name format: redis-analysis-{host:port}-{db}.csv
+	//The keys order by count desc
 	analysis.SaveReports("./reports")
 }
