@@ -142,7 +142,7 @@ func (analysis Analysis) SaveReports(folder string) error {
 			str = fmt.Sprintf("%s,%d,%s,%d,%d\n",
 				value.Key,
 				value.Count,
-				fmt.Sprintf("%d-%0.3f-%s", value.Size, size, unit),
+				fmt.Sprintf("%0.3f %s", size, unit),
 				value.NeverExpire,
 				value.AvgTtl)
 			fp.Append([]byte(str))
