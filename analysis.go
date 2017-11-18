@@ -128,6 +128,8 @@ func (analysis Analysis) SaveReports(folder string) error {
 	var template = fmt.Sprintf("%s%sredis-analysis-%s%s", folder, string(os.PathSeparator), analysis.redis.Id, "-%d.csv")
 	var str string
 	var filename string
+	var size float64
+	var unit string
 	for db, reports := range analysis.Reports {
 		filename = fmt.Sprintf(template, db)
 		fp, err := NewFile(filename, os.O_CREATE|os.O_WRONLY, os.ModePerm)
@@ -136,7 +138,13 @@ func (analysis Analysis) SaveReports(folder string) error {
 		}
 		fp.Append([]byte("Key,Count,Size,NeverExpire,AvgTtl(excluded never expire)\n"))
 		for _, value := range reports {
-			str = fmt.Sprintf("%s,%d,%d,%d,%d\n", value.Key, value.Count, value.Size, value.NeverExpire, value.AvgTtl)
+			size, unit = HumanSize(value.Size)
+			str = fmt.Sprintf("%s,%d,%s,%d,%d\n",
+				value.Key,
+				value.Count,
+				fmt.Sprintf("%d-%0.3f-%s", value.Size, size, unit),
+				value.NeverExpire,
+				value.AvgTtl)
 			fp.Append([]byte(str))
 		}
 		fp.Close()
