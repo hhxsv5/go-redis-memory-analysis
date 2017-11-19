@@ -1,11 +1,11 @@
 package storages
 
 import (
-	"github.com/garyburd/redigo/redis"
-	"fmt"
 	"bytes"
-	"strings"
+	"fmt"
+	"github.com/garyburd/redigo/redis"
 	"strconv"
+	"strings"
 )
 
 type RedisClient struct {
@@ -89,14 +89,16 @@ func (client RedisClient) SerializedLength(key string) (uint64, error) {
 	reply, err := client.conn.Do("DEBUG", "OBJECT", key)
 	debug, err := redis.String(reply, err)
 
-	debugs := strings.Split(debug, " ")
-	items := strings.Split(debugs[4], ":")
 	if err != nil {
 		return 0, err
 	}
+
+	debugs := strings.Split(debug, " ")
+	items := strings.Split(debugs[4], ":")
+
 	return strconv.ParseUint(items[1], 10, 64)
 }
 
-func (client RedisClient) Close() (error) {
+func (client RedisClient) Close() error {
 	return client.conn.Close()
 }
