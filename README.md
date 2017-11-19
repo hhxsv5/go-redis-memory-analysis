@@ -16,4 +16,4 @@ go run examples/main.go
 
 ## License
 
-[MIT](https://github.com/hhxsv5/redis-memory-analysis/blob/master/LICENSE)
+[MIT](https://github.com/hhxsv5/go-redis-memory-analysis/blob/master/LICENSE)
