@@ -17,7 +17,7 @@ func main() {
 	analysis := NewAnalysis(redis)
 
 	//Scan the keys which can be split by '#' ':'
-	//special pattern characters need to escape by '\'
+	//Special pattern characters need to escape by '\'
 	analysis.Start([]string{"#", ":"}, 3000)
 
 	//Find the csv file in default target folder: ./reports
