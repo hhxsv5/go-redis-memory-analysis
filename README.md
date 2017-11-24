@@ -17,11 +17,15 @@ glide install
 ```Go
 //cd examples
 go run main.go
-
 //find reports in current folder
 ```
 
 ![CSV](https://raw.githubusercontent.com/hhxsv5/go-redis-memory-analysis/master/examples/demo.png)
+
+## Another tool implemented by PHP
+
+[redis-memory-analysis](https://github.com/hhxsv5/redis-memory-analysis)
+
 
 ## License
 
