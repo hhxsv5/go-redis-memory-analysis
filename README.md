@@ -5,21 +5,34 @@ Analyzing memory of redis is to find the keys(prefix) which used a lot of memory
 
 
 ## Usage
-### Run demo
 
-- Install
+1. Install
 ```Shell
-cd examples
-//create file glide.yaml if not exist
-touch glide.yaml
+//cd your-root-folder-of-project
+//Create the file glide.yaml if not exist
+//touch glide.yaml
 glide get github.com/hhxsv5/go-redis-memory-analysis#~1.1.0
 ```
 
-- Run
+2. Run
 ```Go
-//cd examples
-go run main.go
-//find reports in current folder
+redis, err := NewRedisClient("127.0.0.1", 6379, "")
+if err != nil {
+    fmt.Println("Connect redis fail", err)
+    return
+}
+defer redis.Close()
+
+analysis := NewAnalysis(redis)
+
+//Scan the keys which can be split by '#' ':'
+//Special pattern characters need to escape by '\'
+analysis.Start([]string{"#", ":"}, 3000)
+
+//Find the csv file in default target folder: ./reports
+//CSV file name format: redis-analysis-{host:port}-{db}.csv
+//The keys order by count desc
+analysis.SaveReports("./reports")
 ```
 
 ![CSV](https://raw.githubusercontent.com/hhxsv5/go-redis-memory-analysis/master/examples/demo.png)
