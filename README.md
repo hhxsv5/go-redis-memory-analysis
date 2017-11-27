@@ -7,13 +7,15 @@ Analyzing memory of redis is to find the keys(prefix) which used a lot of memory
 ## Usage
 ### Run demo
 
+- Install
 ```Shell
 cd examples
-//install dependencies
-glide init
-glide install
+//create file glide.yaml if not exist
+touch glide.yaml
+glide get github.com/hhxsv5/go-redis-memory-analysis#~1.1.0
 ```
 
+- Run
 ```Go
 //cd examples
 go run main.go

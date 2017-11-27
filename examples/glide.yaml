@@ -1,6 +1,4 @@
-package: github.com/hhxsv5/go-redis-memory-analysis/examples
+package: ""
 import:
 - package: github.com/hhxsv5/go-redis-memory-analysis
   version: ~1.1.0
-  subpackages:
-  - storages

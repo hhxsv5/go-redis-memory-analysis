@@ -1,5 +1,5 @@
-hash: 4896cf96fdbf088dfd6b31dc1900031abf6cc6d94ccbde559b0423375a5b5539
-updated: 2017-11-21T11:45:02.93636+08:00
+hash: 65e32bad8ae6e82243fce9dd166354c77e87e76425152c7246e75b5f6f98bcfb
+updated: 2017-11-27T12:51:49.601488+08:00
 imports:
 - name: github.com/garyburd/redigo
   version: 47dc60e71eed504e3ef8e77ee3c6fe720f3be57f
@@ -7,7 +7,7 @@ imports:
   - internal
   - redis
 - name: github.com/hhxsv5/go-redis-memory-analysis
-  version: a27a3fbd75d155d81298e86c22ce78979eb7f328
+  version: 0e80aa0cdda9d09e6125317d4dbf62af2f0ede78
   subpackages:
   - storages
 testImports: []
