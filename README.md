@@ -12,6 +12,7 @@ Analyzing memory of redis is to find the keys(prefix) which used a lot of memory
 //Create the file glide.yaml if not exist
 //touch glide.yaml
 glide get github.com/hhxsv5/go-redis-memory-analysis#~1.1.0
+//glide: THANK GO15VENDOREXPERIMENT
 ```
 
 2. Run
