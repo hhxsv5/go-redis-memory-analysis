@@ -6,7 +6,7 @@ Analyzing memory of redis is to find the keys(prefix) which used a lot of memory
 
 ## Usage
 
-1. Install
+1.Install
 ```Shell
 //cd your-root-folder-of-project
 //Create the file glide.yaml if not exist
@@ -14,7 +14,7 @@ Analyzing memory of redis is to find the keys(prefix) which used a lot of memory
 glide get github.com/hhxsv5/go-redis-memory-analysis#~1.1.0
 ```
 
-2. Run
+2.Run
 ```Go
 redis, err := NewRedisClient("127.0.0.1", 6379, "")
 if err != nil {
