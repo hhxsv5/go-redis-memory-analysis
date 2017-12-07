@@ -45,13 +45,15 @@ func (analysis Analysis) Start(delimiters []string, limit uint64) {
 	match := "*[" + strings.Join(delimiters, "") + "]*"
 	databases, _ := analysis.redis.GetDatabases()
 
-	var cursor uint64
-	var r Report
-	var f float64
-	var ttl int64
-	var length uint64
-	var sr SortReports
-	var mr map[string]Report
+	var (
+		cursor uint64
+		r      Report
+		f      float64
+		ttl    int64
+		length uint64
+		sr     SortReports
+		mr     map[string]Report
+	)
 
 	for db, _ := range databases {
 		cursor = 0
@@ -126,10 +128,12 @@ func (analysis Analysis) SaveReports(folder string) error {
 	}
 
 	var template = fmt.Sprintf("%s%sredis-analysis-%s%s", folder, string(os.PathSeparator), analysis.redis.Id, "-%d.csv")
-	var str string
-	var filename string
-	var size float64
-	var unit string
+	var (
+		str      string
+		filename string
+		size     float64
+		unit     string
+	)
 	for db, reports := range analysis.Reports {
 		filename = fmt.Sprintf(template, db)
 		fp, err := NewFile(filename, os.O_CREATE|os.O_WRONLY, os.ModePerm)
