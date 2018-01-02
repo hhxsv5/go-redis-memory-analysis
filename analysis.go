@@ -17,12 +17,16 @@ type Report struct {
 	AvgTtl      uint64
 }
 
-type Analysis struct {
-	redis   *RedisClient
-	Reports map[uint64][]Report
-}
+type DBReports map[uint64][]Report
+
+type KeyReports map[string]Report
 
 type SortReports []Report
+
+type Analysis struct {
+	redis   *RedisClient
+	Reports DBReports
+}
 
 func (sr SortReports) Len() int {
 	return len(sr)
@@ -37,7 +41,7 @@ func (sr SortReports) Swap(i, j int) {
 }
 
 func NewAnalysis(redis *RedisClient) *Analysis {
-	return &Analysis{redis, map[uint64][]Report{}}
+	return &Analysis{redis, DBReports{}}
 }
 
 func (analysis Analysis) Start(delimiters []string, limit uint64) {
@@ -52,12 +56,12 @@ func (analysis Analysis) Start(delimiters []string, limit uint64) {
 		ttl    int64
 		length uint64
 		sr     SortReports
-		mr     map[string]Report
+		mr     KeyReports
 	)
 
 	for db, _ := range databases {
 		cursor = 0
-		mr = map[string]Report{}
+		mr = KeyReports{}
 
 		analysis.redis.Select(db)
 
