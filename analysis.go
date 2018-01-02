@@ -44,7 +44,7 @@ func NewAnalysis(redis *RedisClient) *Analysis {
 	return &Analysis{redis, DBReports{}}
 }
 
-func (analysis Analysis) Start(delimiters []string, limit uint64) {
+func (analysis Analysis) Start(delimiters []string) {
 
 	match := "*[" + strings.Join(delimiters, "") + "]*"
 	databases, _ := analysis.redis.GetDatabases()

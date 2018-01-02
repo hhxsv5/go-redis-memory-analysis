@@ -2,7 +2,6 @@ package storages
 
 import (
 	"bytes"
-	"fmt"
 	"github.com/garyburd/redigo/redis"
 	"strconv"
 	"strings"
@@ -21,14 +20,12 @@ func NewRedisClient(host string, port uint16, password string) (*RedisClient, er
 
 	conn, err := redis.Dial("tcp", addr.String())
 	if err != nil {
-		fmt.Println("connect redis fail: ", err)
 		return nil, err
 	}
 
 	if password != "" {
 		_, err := conn.Do("AUTH", password)
 		if err != nil {
-			fmt.Println("auth fail:", err)
 			return nil, err
 		}
 	}
