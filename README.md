@@ -11,21 +11,21 @@ Analyzing memory of redis is to find the keys(prefix) which used a lot of memory
 //cd your-root-folder-of-project
 //Create the file glide.yaml if not exist
 //touch glide.yaml
-glide get github.com/hhxsv5/go-redis-memory-analysis#~1.1.0
+glide get github.com/hhxsv5/go-redis-memory-analysis#~2.0.0
 //glide: THANK GO15VENDOREXPERIMENT
 ```
 
 2. Run
 
 ```Go
-redis, err := NewRedisClient("127.0.0.1", 6379, "")
+analysis := NewAnalysis()
+//Open redis: 127.0.0.1:6379 without password
+err := analysis.Open("127.0.0.1", 6379, "")
+defer analysis.Close()
 if err != nil {
-    fmt.Println("connect redis fail", err)
+    fmt.Println("something wrong:", err)
     return
 }
-defer redis.Close()
-
-analysis := NewAnalysis(redis)
 
 //Scan the keys which can be split by '#' ':'
 //Special pattern characters need to escape by '\'

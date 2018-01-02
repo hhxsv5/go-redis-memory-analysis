@@ -3,18 +3,17 @@ package main
 import (
 	"fmt"
 	. "github.com/hhxsv5/go-redis-memory-analysis"
-	. "github.com/hhxsv5/go-redis-memory-analysis/storages"
 )
 
 func main() {
-	redis, err := NewRedisClient("127.0.0.1", 6379, "")
+	analysis := NewAnalysis()
+	//Open redis: 127.0.0.1:6379 without password
+	err := analysis.Open("127.0.0.1", 6379, "")
+	defer analysis.Close()
 	if err != nil {
-		fmt.Println("connect redis fail", err)
+		fmt.Println("something wrong:", err)
 		return
 	}
-	defer redis.Close()
-
-	analysis := NewAnalysis(redis)
 
 	//Scan the keys which can be split by '#' ':'
 	//Special pattern characters need to escape by '\'

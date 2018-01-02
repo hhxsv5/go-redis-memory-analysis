@@ -40,8 +40,23 @@ func (sr SortReports) Swap(i, j int) {
 	sr[i], sr[j] = sr[j], sr[i]
 }
 
-func NewAnalysis(redis *RedisClient) *Analysis {
-	return &Analysis{redis, DBReports{}}
+func NewAnalysis() *Analysis {
+	return &Analysis{nil, DBReports{}}
+}
+
+func (analysis *Analysis) Open(host string, port uint16, password string) error {
+	redis, err := NewRedisClient(host, port, password)
+	if err != nil {
+		return err
+	}
+	analysis.redis = redis
+	return nil
+}
+
+func (analysis *Analysis) Close() {
+	if analysis.redis != nil {
+		analysis.redis.Close()
+	}
 }
 
 func (analysis Analysis) Start(delimiters []string) {
