@@ -20,7 +20,7 @@ glide get github.com/hhxsv5/go-redis-memory-analysis#~1.1.0
 ```Go
 redis, err := NewRedisClient("127.0.0.1", 6379, "")
 if err != nil {
-    fmt.Println("Connect redis fail", err)
+    fmt.Println("connect redis fail", err)
     return
 }
 defer redis.Close()
@@ -29,7 +29,7 @@ analysis := NewAnalysis(redis)
 
 //Scan the keys which can be split by '#' ':'
 //Special pattern characters need to escape by '\'
-analysis.Start([]string{"#", ":"}, 3000)
+analysis.Start([]string{"#", ":"})
 
 //Find the csv file in default target folder: ./reports
 //CSV file name format: redis-analysis-{host:port}-{db}.csv
