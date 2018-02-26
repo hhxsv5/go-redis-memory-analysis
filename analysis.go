@@ -146,7 +146,7 @@ func (analysis Analysis) SaveReports(folder string) error {
 		os.MkdirAll(folder, os.ModePerm)
 	}
 
-	var template = fmt.Sprintf("%s%sredis-analysis-%s%s", folder, string(os.PathSeparator), analysis.redis.Id, "-%d.csv")
+	var template = fmt.Sprintf("%s%sredis-analysis-%s%s", folder, string(os.PathSeparator), strings.Replace(analysis.redis.Id, ":", "-", 1), "-%d.csv")
 	var (
 		str      string
 		filename string
