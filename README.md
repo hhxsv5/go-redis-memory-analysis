@@ -3,7 +3,28 @@ Redis memory analysis
 
 🔎  Analyzing memory of redis is to find the keys(prefix) which used a lot of memory, export the analysis result into csv file.
 
-## Usage
+## Binary File Usage
+
+1. Download the appropriate binary file from [Releases](https://github.com/hhxsv5/go-redis-memory-analysis/releases)
+
+2. Run
+
+```Shell
+./redis-memory-analysis-linux-amd64 -h
+Usage of ./redis-memory-analysis-darwin-amd64:
+  -ip string
+    	The host of redis (default "127.0.0.1")
+  -password string
+    	The password of redis
+  -port uint
+    	The port of redis (default 6379)
+  -prefixes string
+    	The prefixes list of redis key, be split by ',', special pattern characters need to escape by '\' (default "#,:")
+  -reportPath string
+    	The csv file path of analysis result (default "./reports")
+```
+
+## Source Code Usage
 
 1. Install
 
