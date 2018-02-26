@@ -16,7 +16,7 @@ Usage of ./redis-memory-analysis-darwin-amd64:
   -ip string
     	The host of redis (default "127.0.0.1")
   -password string
-    	The password of redis
+    	The password of redis (default "")
   -port uint
     	The port of redis (default 6379)
   -prefixes string
