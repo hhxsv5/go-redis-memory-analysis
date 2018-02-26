@@ -23,4 +23,6 @@ func main() {
 	//CSV file name format: redis-analysis-{host:port}-{db}.csv
 	//The keys order by count desc
 	analysis.SaveReports("./reports")
+
+	fmt.Println("Done")
 }

@@ -60,7 +60,7 @@ func (analysis *Analysis) Close() {
 }
 
 func (analysis Analysis) Start(delimiters []string) {
-
+	fmt.Println("Starting analysis")
 	match := "*[" + strings.Join(delimiters, "") + "]*"
 	databases, _ := analysis.redis.GetDatabases()
 
@@ -75,6 +75,7 @@ func (analysis Analysis) Start(delimiters []string) {
 	)
 
 	for db, _ := range databases {
+		fmt.Println("Analyzing db", db)
 		cursor = 0
 		mr = KeyReports{}
 
@@ -142,6 +143,7 @@ func (analysis Analysis) Start(delimiters []string) {
 }
 
 func (analysis Analysis) SaveReports(folder string) error {
+	fmt.Println("Saving the results of the analysis into", folder)
 	if _, err := os.Stat(folder); os.IsNotExist(err) {
 		os.MkdirAll(folder, os.ModePerm)
 	}

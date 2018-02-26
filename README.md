@@ -10,6 +10,7 @@ Redis memory analysis
 2. Run
 
 ```Shell
+# help
 ./redis-memory-analysis-linux-amd64 -h
 Usage of ./redis-memory-analysis-darwin-amd64:
   -ip string
@@ -22,6 +23,9 @@ Usage of ./redis-memory-analysis-darwin-amd64:
     	The prefixes list of redis key, be split by ',', special pattern characters need to escape by '\' (default "#,:")
   -reportPath string
     	The csv file path of analysis result (default "./reports")
+
+# run
+./redis-memory-analysis-linux-amd64 -ip="127.0.0.1" -port=6380 -password="abc"
 ```
 
 ## Source Code Usage

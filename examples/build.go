@@ -27,4 +27,6 @@ func main() {
 	analysis.Start(strings.Split(*prefixes, ","))
 
 	analysis.SaveReports(*reportPath)
+
+	fmt.Println("Done")
 }
