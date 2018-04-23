@@ -1,4 +1,0 @@
-package: ""
-import:
-- package: github.com/hhxsv5/go-redis-memory-analysis
-  version: ~2.0.0
