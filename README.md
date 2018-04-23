@@ -34,10 +34,8 @@ Usage of ./redis-memory-analysis-darwin-amd64:
 
 ```Shell
 //cd your-root-folder-of-project
-//Create the file glide.yaml if not exist
-//touch glide.yaml
-glide get github.com/hhxsv5/go-redis-memory-analysis#~2.0.0
-//glide: THANK GO15VENDOREXPERIMENT
+// dep init
+dep ensure -add github.com/hhxsv5/go-redis-memory-analysis@~2.0.0
 ```
 
 2. Run
