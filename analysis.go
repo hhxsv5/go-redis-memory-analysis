@@ -121,7 +121,6 @@ func (analysis Analysis) Start(delimiters []string) {
 					tmp = strings.Index(key, delimiter)
 					if tmp != -1 && (tmp < fp || fp == 0) {
 						fd, fp = delimiter, tmp
-						break
 					}
 				}
 
@@ -205,7 +204,6 @@ func (analysis Analysis) StartRDB(delimiters []string) {
 				tmp = strings.Index(key, delimiter)
 				if tmp != -1 && (tmp < fp || fp == 0) {
 					fd, fp = delimiter, tmp
-					break
 				}
 			}
 
