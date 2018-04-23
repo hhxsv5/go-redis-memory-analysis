@@ -29,6 +29,10 @@
   name = "github.com/garyburd/redigo"
   version = "~1.6.0"
 
+[[constraint]]
+  branch = "master"
+  name = "github.com/vrischmann/rdbtools"
+
 [prune]
   go-tests = true
   unused-packages = true

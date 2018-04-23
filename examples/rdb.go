@@ -2,14 +2,14 @@ package main
 
 import (
 	"fmt"
-	. "github.com/hhxsv5/go-redis-memory-analysis"
+	"github.com/hhxsv5/go-redis-memory-analysis"
 )
 
 func main() {
-	analysis := NewAnalysis()
-	//Open redis: 127.0.0.1:6379 without password
-	err := analysis.Open("127.0.0.1", 6379, "")
-	defer analysis.Close()
+	analysis := gorma.NewAnalysis()
+	//Open redis rdb file: ./6379_dump.rdb
+	err := analysis.OpenRDB("./6379_dump.rdb")
+	defer analysis.CloseRDB()
 	if err != nil {
 		fmt.Println("something wrong:", err)
 		return
@@ -17,7 +17,7 @@ func main() {
 
 	//Scan the keys which can be split by '#' ':'
 	//Special pattern characters need to escape by '\'
-	analysis.Start([]string{"#", ":"})
+	analysis.StartRDB([]string{"#", ":"})
 
 	//Find the csv file in default target folder: ./reports
 	//CSV file name format: redis-analysis-{host:port}-{db}.csv

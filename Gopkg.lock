@@ -10,9 +10,15 @@
   revision = "a69d19351219b6dd56f274f96d85a7014a2ec34e"
   version = "v1.6.0"
 
+[[projects]]
+  branch = "master"
+  name = "github.com/vrischmann/rdbtools"
+  packages = ["."]
+  revision = "cd9eb17adda8fa11d4415be7e96d8f5fddb37532"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "f0f2fb02bbe701df7756ae3d3407b39e3ac30e8f9b6400a10efe822f45a353ad"
+  inputs-digest = "e330c9a22f882a1a3c5d8500f09fa71ddebb2d2e063bf3c79546a901214203ce"
   solver-name = "gps-cdcl"
   solver-version = 1
