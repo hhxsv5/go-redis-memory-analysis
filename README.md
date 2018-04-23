@@ -19,13 +19,18 @@ Usage of ./redis-memory-analysis-darwin-amd64:
     	The password of redis (default "")
   -port uint
     	The port of redis (default 6379)
+  -rdb string
+    	The rdb file of redis (default "")
   -prefixes string
     	The prefixes list of redis key, be split by ',', special pattern characters need to escape by '\' (default "#,:")
   -reportPath string
     	The csv file path of analysis result (default "./reports")
 
-# run
-./redis-memory-analysis-linux-amd64 -ip="127.0.0.1" -port=6380 -password="abc"
+# run by connecting to redis
+./redis-memory-analysis-linux-amd64 -ip="127.0.0.1" -port=6380 -password="abc" -prefixes="#,:"
+
+# run by redis rdb file
+./redis-memory-analysis-linux-amd64 -rdb="./6379_dump.rdb" -prefixes="#,:"
 ```
 
 ## Source Code Usage
@@ -40,6 +45,8 @@ dep ensure -add github.com/hhxsv5/go-redis-memory-analysis@~2.0.0
 
 2. Run
 
+- Analyze keys by connecting to redis directly.
+
 ```Go
 analysis := NewAnalysis()
 //Open redis: 127.0.0.1:6379 without password
@@ -53,6 +60,28 @@ if err != nil {
 //Scan the keys which can be split by '#' ':'
 //Special pattern characters need to escape by '\'
 analysis.Start([]string{"#", ":"})
+
+//Find the csv file in default target folder: ./reports
+//CSV file name format: redis-analysis-{host:port}-{db}.csv
+//The keys order by count desc
+analysis.SaveReports("./reports")
+```
+
+- Analyze keys by redis `RDB` file, but cannot work out the size of key.
+
+```Go
+analysis := NewAnalysis()
+//Open redis rdb file: ./6379_dump.rdb
+err := analysis.OpenRDB("./6379_dump.rdb")
+defer analysis.CloseRDB()
+if err != nil {
+    fmt.Println("something wrong:", err)
+    return
+}
+
+//Scan the keys which can be split by '#' ':'
+//Special pattern characters need to escape by '\'
+analysis.StartRDB([]string{"#", ":"})
 
 //Find the csv file in default target folder: ./reports
 //CSV file name format: redis-analysis-{host:port}-{db}.csv
