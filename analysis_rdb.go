@@ -3,11 +3,11 @@ package gorma
 import (
 	"os"
 	"fmt"
-	"github.com/vrischmann/rdbtools"
-	"strings"
+	"sort"
 	"time"
 	"strconv"
-	"sort"
+	"strings"
+	"github.com/vrischmann/rdbtools"
 	"github.com/hhxsv5/go-redis-memory-analysis/storages"
 )
 
