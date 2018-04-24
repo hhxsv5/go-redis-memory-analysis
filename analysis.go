@@ -335,9 +335,9 @@ func (analysis Analysis) SaveReports(folder string) error {
 
 	var template string
 	if analysis.redis != nil {
-		template = fmt.Sprintf("%s%sredis-analysis-%s%s", folder, string(os.PathSeparator), strings.Replace(analysis.redis.Id, ":", "-", 1), "-%d.csv")
+		template = fmt.Sprintf("%s%sredis-analysis-%s%s", folder, string(os.PathSeparator), strings.Replace(analysis.redis.Id, ":", "-", -1), "-%d.csv")
 	} else if analysis.rdb != nil {
-		template = fmt.Sprintf("%s%sredis-analysis-%s%s", folder, string(os.PathSeparator), strings.Replace(analysis.rdb.Name(), "/", "-", 1), "-%d.csv")
+		template = fmt.Sprintf("%s%sredis-analysis-%s%s", folder, string(os.PathSeparator), strings.Replace(analysis.rdb.Name(), "/", "-", -1), "-%d.csv")
 	} else {
 		template = fmt.Sprintf("%s%sredis-analysis-%s", folder, string(os.PathSeparator), "-%d.csv")
 	}
