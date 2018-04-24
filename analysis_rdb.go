@@ -1,179 +1,36 @@
 package gorma
 
 import (
-	"fmt"
 	"os"
-	"sort"
-	"strconv"
-	"strings"
+	"fmt"
 	"github.com/vrischmann/rdbtools"
-	. "github.com/hhxsv5/go-redis-memory-analysis/storages"
+	"strings"
 	"time"
+	"strconv"
+	"sort"
+	"github.com/hhxsv5/go-redis-memory-analysis/storages"
 )
 
-type Report struct {
-	Key         string
-	Count       uint64
-	Size        uint64
-	NeverExpire uint64
-	AvgTtl      uint64
-}
-
-type DBReports map[uint64][]Report
-
-type KeyReports map[string]Report
-
-type SortBySizeReports []Report
-type SortByCountReports []Report
-
-type Analysis struct {
-	redis   *RedisClient
+type AnalysisRDB struct {
 	rdb     *os.File
 	Reports DBReports
 }
 
-func (sr SortBySizeReports) Len() int {
-	return len(sr)
-}
-
-func (sr SortBySizeReports) Less(i, j int) bool {
-	return sr[i].Size > sr[j].Size
-}
-
-func (sr SortBySizeReports) Swap(i, j int) {
-	sr[i], sr[j] = sr[j], sr[i]
-}
-
-func (sr SortByCountReports) Len() int {
-	return len(sr)
-}
-
-func (sr SortByCountReports) Less(i, j int) bool {
-	return sr[i].Count > sr[j].Count
-}
-
-func (sr SortByCountReports) Swap(i, j int) {
-	sr[i], sr[j] = sr[j], sr[i]
-}
-
-func NewAnalysis() *Analysis {
-	return &Analysis{nil, nil, DBReports{}}
-}
-
-func (analysis *Analysis) Open(host string, port uint16, password string) error {
-	redis, err := NewRedisClient(host, port, password)
-	if err != nil {
-		return err
-	}
-	analysis.redis = redis
-	return nil
-}
-
-func (analysis *Analysis) OpenRDB(rdb string) error {
+func NewAnalysisRDB(rdb string) (*AnalysisRDB, error) {
 	fp, err := os.Open(rdb)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	analysis.rdb = fp
-	return nil
+	return &AnalysisRDB{fp, DBReports{}}, nil
 }
 
-func (analysis *Analysis) Close() {
-	if analysis.redis != nil {
-		analysis.redis.Close()
-	}
-}
-
-func (analysis *Analysis) CloseRDB() {
+func (analysis *AnalysisRDB) Close() {
 	if analysis.rdb != nil {
 		analysis.rdb.Close()
 	}
 }
 
-func (analysis Analysis) Start(delimiters []string) {
-	fmt.Println("Starting analysis")
-	match := "*[" + strings.Join(delimiters, "") + "]*"
-	databases, _ := analysis.redis.GetDatabases()
-
-	var (
-		cursor uint64
-		r      Report
-		f      float64
-		ttl    int64
-		length uint64
-		sr     SortBySizeReports
-		mr     KeyReports
-	)
-
-	for db, _ := range databases {
-		fmt.Println("Analyzing db", db)
-		cursor = 0
-		mr = KeyReports{}
-
-		analysis.redis.Select(db)
-
-		for {
-			keys, _ := analysis.redis.Scan(&cursor, match, 3000)
-			fd, fp, tmp, nk := "", 0, 0, ""
-			for _, key := range keys {
-				fd, fp, tmp, nk, ttl = "", 0, 0, "", 0
-				for _, delimiter := range delimiters {
-					tmp = strings.Index(key, delimiter)
-					if tmp != -1 && (tmp < fp || fp == 0) {
-						fd, fp = delimiter, tmp
-					}
-				}
-
-				if fp == 0 {
-					continue
-				}
-
-				nk = key[0:fp] + fd + "*"
-
-				if _, ok := mr[nk]; ok {
-					r = mr[nk]
-				} else {
-					r = Report{nk, 0, 0, 0, 0}
-				}
-
-				ttl, _ = analysis.redis.Ttl(key)
-
-				switch ttl {
-				case -2:
-					continue
-				case -1:
-					r.NeverExpire++
-					r.Count++
-				default:
-					f = float64(r.AvgTtl*(r.Count-r.NeverExpire)+uint64(ttl)) / float64(r.Count+1-r.NeverExpire)
-					ttl, _ := strconv.ParseUint(fmt.Sprintf("%0.0f", f), 10, 64)
-					r.AvgTtl = ttl
-					r.Count++
-				}
-
-				length, _ = analysis.redis.SerializedLength(key)
-				r.Size += length
-
-				mr[nk] = r
-			}
-
-			if cursor == 0 {
-				break
-			}
-		}
-
-		//Sort by size
-		sr = SortBySizeReports{}
-		for _, report := range mr {
-			sr = append(sr, report)
-		}
-		sort.Sort(sr)
-
-		analysis.Reports[db] = sr
-	}
-}
-
-func (analysis Analysis) StartRDB(delimiters []string) {
+func (analysis AnalysisRDB) Start(delimiters []string) {
 	fmt.Println("Starting analysis")
 	var (
 		r   Report
@@ -327,29 +184,22 @@ func (analysis Analysis) StartRDB(delimiters []string) {
 	}
 }
 
-func (analysis Analysis) SaveReports(folder string) error {
+func (analysis AnalysisRDB) SaveReports(folder string) error {
 	fmt.Println("Saving the results of the analysis into", folder)
 	if _, err := os.Stat(folder); os.IsNotExist(err) {
 		os.MkdirAll(folder, os.ModePerm)
 	}
 
-	var template string
-	if analysis.redis != nil {
-		template = fmt.Sprintf("%s%sredis-analysis-%s%s", folder, string(os.PathSeparator), strings.Replace(analysis.redis.Id, ":", "-", -1), "-%d.csv")
-	} else if analysis.rdb != nil {
-		template = fmt.Sprintf("%s%sredis-analysis-%s%s", folder, string(os.PathSeparator), strings.Replace(analysis.rdb.Name(), "/", "-", -1), "-%d.csv")
-	} else {
-		template = fmt.Sprintf("%s%sredis-analysis-%s", folder, string(os.PathSeparator), "-%d.csv")
-	}
 	var (
 		str      string
 		filename string
 		size     float64
 		unit     string
 	)
+	template := fmt.Sprintf("%s%sredis-analysis-%s%s", folder, string(os.PathSeparator), strings.Replace(analysis.rdb.Name(), "/", "-", -1), "-%d.csv")
 	for db, reports := range analysis.Reports {
 		filename = fmt.Sprintf(template, db)
-		fp, err := NewFile(filename, os.O_CREATE|os.O_WRONLY, os.ModePerm)
+		fp, err := storages.NewFile(filename, os.O_CREATE|os.O_WRONLY, os.ModePerm)
 		if err != nil {
 			return err
 		}

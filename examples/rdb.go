@@ -6,10 +6,9 @@ import (
 )
 
 func main() {
-	analysis := gorma.NewAnalysis()
 	//Open redis rdb file: ./6379_dump.rdb
-	err := analysis.OpenRDB("./6379_dump.rdb")
-	defer analysis.CloseRDB()
+	analysis, err := gorma.NewAnalysisRDB("./6379_dump.rdb")
+	defer analysis.Close()
 	if err != nil {
 		fmt.Println("something wrong:", err)
 		return
@@ -17,7 +16,7 @@ func main() {
 
 	//Scan the keys which can be split by '#' ':'
 	//Special pattern characters need to escape by '\'
-	analysis.StartRDB([]string{"#", ":"})
+	analysis.Start([]string{"#", ":"})
 
 	//Find the csv file in default target folder: ./reports
 	//CSV file name format: redis-analysis-{host:port}-{db}.csv

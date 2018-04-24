@@ -17,25 +17,21 @@ func main() {
 
 	flag.Parse()
 
-	analysis := gorma.NewAnalysis()
-	var err error
+	var (
+		analysis gorma.AnalysisInterface
+		err      error
+	)
 	if len(*rdb) > 0 {
-		err = analysis.OpenRDB(*rdb)
-		defer analysis.CloseRDB()
-		if err != nil {
-			fmt.Println("something wrong:", err)
-			return
-		}
-		analysis.StartRDB(strings.Split(*prefixes, "//"))
+		analysis, err = gorma.NewAnalysisRDB(*rdb)
 	} else {
-		err = analysis.Open(*ip, uint16(*port), *password)
-		defer analysis.Close()
-		if err != nil {
-			fmt.Println("something wrong:", err)
-			return
-		}
-		analysis.Start(strings.Split(*prefixes, "//"))
+		analysis, err = gorma.NewAnalysisConnection(*ip, uint16(*port), *password)
 	}
+	if err != nil {
+		fmt.Println("something wrong:", err)
+		return
+	}
+	defer analysis.Close()
+	analysis.Start(strings.Split(*prefixes, "//"))
 	err = analysis.SaveReports(*reportPath)
 	if err == nil {
 		fmt.Println("done")

@@ -6,14 +6,13 @@ import (
 )
 
 func main() {
-	analysis := NewAnalysis()
 	//Open redis: 127.0.0.1:6379 without password
-	err := analysis.Open("127.0.0.1", 6379, "")
-	defer analysis.Close()
+	analysis, err := NewAnalysisConnection("127.0.0.1", 6379, "")
 	if err != nil {
 		fmt.Println("something wrong:", err)
 		return
 	}
+	defer analysis.Close()
 
 	//Scan the keys which can be split by '#' ':'
 	//Special pattern characters need to escape by '\'
