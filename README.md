@@ -64,7 +64,12 @@ analysis.Start([]string{"#", ":"})
 //Find the csv file in default target folder: ./reports
 //CSV file name format: redis-analysis-{host:port}-{db}.csv
 //The keys order by count desc
-analysis.SaveReports("./reports")
+err = analysis.SaveReports("./reports")
+if err == nil {
+    fmt.Println("done")
+} else {
+    fmt.Println("error:", err)
+}
 ```
 
 - Analyze keys by redis `RDB` file, but cannot work out the size of key.
@@ -86,7 +91,12 @@ analysis.StartRDB([]string{"#", ":"})
 //Find the csv file in default target folder: ./reports
 //CSV file name format: redis-analysis-{host:port}-{db}.csv
 //The keys order by count desc
-analysis.SaveReports("./reports")
+err = analysis.SaveReports("./reports")
+if err == nil {
+    fmt.Println("done")
+} else {
+    fmt.Println("error:", err)
+}
 ```
 
 ![CSV](https://raw.githubusercontent.com/hhxsv5/go-redis-memory-analysis/master/examples/demo.png)

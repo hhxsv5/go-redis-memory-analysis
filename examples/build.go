@@ -18,8 +18,9 @@ func main() {
 	flag.Parse()
 
 	analysis := gorma.NewAnalysis()
+	var err error
 	if len(*rdb) > 0 {
-		err := analysis.OpenRDB(*rdb)
+		err = analysis.OpenRDB(*rdb)
 		defer analysis.CloseRDB()
 		if err != nil {
 			fmt.Println("something wrong:", err)
@@ -27,7 +28,7 @@ func main() {
 		}
 		analysis.StartRDB(strings.Split(*prefixes, "//"))
 	} else {
-		err := analysis.Open(*ip, uint16(*port), *password)
+		err = analysis.Open(*ip, uint16(*port), *password)
 		defer analysis.Close()
 		if err != nil {
 			fmt.Println("something wrong:", err)
@@ -35,7 +36,10 @@ func main() {
 		}
 		analysis.Start(strings.Split(*prefixes, "//"))
 	}
-	analysis.SaveReports(*reportPath)
-
-	fmt.Println("done")
+	err = analysis.SaveReports(*reportPath)
+	if err == nil {
+		fmt.Println("done")
+	} else {
+		fmt.Println("error:", err)
+	}
 }
