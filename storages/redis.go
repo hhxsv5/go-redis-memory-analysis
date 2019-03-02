@@ -2,9 +2,10 @@ package storages
 
 import (
 	"bytes"
-	"github.com/garyburd/redigo/redis"
 	"strconv"
 	"strings"
+
+	"github.com/garyburd/redigo/redis"
 )
 
 type RedisClient struct {

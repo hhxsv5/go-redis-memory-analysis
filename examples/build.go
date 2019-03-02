@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"strings"
+
 	"github.com/hhxsv5/go-redis-memory-analysis"
 )
 

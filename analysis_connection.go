@@ -1,11 +1,12 @@
 package gorma
 
 import (
-	"os"
 	"fmt"
+	"os"
 	"sort"
 	"strconv"
 	"strings"
+
 	"github.com/hhxsv5/go-redis-memory-analysis/storages"
 )
 
@@ -24,7 +25,7 @@ func NewAnalysisConnection(host string, port uint16, password string) (*Analysis
 
 func (analysis *AnalysisConnection) Close() {
 	if analysis.redis != nil {
-		analysis.redis.Close()
+		_ = analysis.redis.Close()
 	}
 }
 
@@ -48,7 +49,7 @@ func (analysis AnalysisConnection) Start(delimiters []string) {
 		cursor = 0
 		mr = KeyReports{}
 
-		analysis.redis.Select(db)
+		_ = analysis.redis.Select(db)
 
 		for {
 			keys, _ := analysis.redis.Scan(&cursor, match, 3000)
@@ -114,7 +115,7 @@ func (analysis AnalysisConnection) Start(delimiters []string) {
 func (analysis AnalysisConnection) SaveReports(folder string) error {
 	fmt.Println("Saving the results of the analysis into", folder)
 	if _, err := os.Stat(folder); os.IsNotExist(err) {
-		os.MkdirAll(folder, os.ModePerm)
+		_ = os.MkdirAll(folder, os.ModePerm)
 	}
 
 	var (
@@ -130,7 +131,7 @@ func (analysis AnalysisConnection) SaveReports(folder string) error {
 		if err != nil {
 			return err
 		}
-		fp.Append([]byte("Key,Count,Size,NeverExpire,AvgTtl(excluded never expire)\n"))
+		_, _ = fp.Append([]byte("Key,Count,Size,NeverExpire,AvgTtl(excluded never expire)\n"))
 		for _, value := range reports {
 			size, unit = HumanSize(value.Size)
 			str = fmt.Sprintf("%s,%d,%s,%d,%d\n",
@@ -139,7 +140,7 @@ func (analysis AnalysisConnection) SaveReports(folder string) error {
 				fmt.Sprintf("%0.3f %s", size, unit),
 				value.NeverExpire,
 				value.AvgTtl)
-			fp.Append([]byte(str))
+			_, _ = fp.Append([]byte(str))
 		}
 		fp.Close()
 	}
