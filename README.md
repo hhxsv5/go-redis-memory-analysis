@@ -3,6 +3,10 @@ Redis memory analysis
 
 🔎  Analyzing memory of redis is to find the keys(prefix) which used a lot of memory, export the analysis result into csv file.
 
+[![GoDoc](https://godoc.org/github.com/hhxsv5/go-redis-memory-analysis?status.svg)](https://godoc.org/github.com/hhxsv5/go-redis-memory-analysis)
+[![Go Report Card](https://goreportcard.com/badge/github.com/hhxsv5/go-redis-memory-analysis)](https://goreportcard.com/report/github.com/hhxsv5/go-redis-memory-analysis)
+[![Sourcegraph](https://sourcegraph.com/github.com/hhxsv5/go-redis-memory-analysis/-/badge.svg)](https://sourcegraph.com/github.com/hhxsv5/go-redis-memory-analysis?badge)
+
 ## Binary File Usage
 
 1. Download the appropriate binary file from [Releases](https://github.com/hhxsv5/go-redis-memory-analysis/releases)

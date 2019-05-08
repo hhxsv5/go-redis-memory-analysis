@@ -40,5 +40,5 @@ func (file *File) Truncate() error {
 }
 
 func (file *File) Close() {
-	file.fp.Close()
+	_ = file.fp.Close()
 }

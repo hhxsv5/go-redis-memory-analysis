@@ -1,0 +1,4 @@
+github.com/garyburd/redigo v1.6.0 h1:0VruCpn7yAIIu7pWVClQC8wxCJEcG3nyzpMSHKi1PQc=
+github.com/garyburd/redigo v1.6.0/go.mod h1:NR3MbYisc3/PwhQ00EMzDiPmrwpPxAn5GI05/YaO1SY=
+github.com/vrischmann/rdbtools v0.0.0-20141203205512-cd9eb17adda8 h1:4HXww/LoHLywgX9Kp2OfXuMqCv4QfTUnSybIcfSLIZI=
+github.com/vrischmann/rdbtools v0.0.0-20141203205512-cd9eb17adda8/go.mod h1:eTDX8ZTtAZ6Hr/Rmfl646+tsY8wxunJ3zHnHjDjjG48=
