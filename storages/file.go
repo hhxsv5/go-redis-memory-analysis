@@ -34,7 +34,7 @@ func (file *File) Append(data []byte) (int, error) {
 func (file *File) Truncate() error {
 	fi, err := os.Stat(file.filename)
 	if err != nil {
-		return nil
+		return err
 	}
 	return file.fp.Truncate(fi.Size())
 }
