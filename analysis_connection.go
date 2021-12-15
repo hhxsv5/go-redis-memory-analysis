@@ -13,6 +13,7 @@ import (
 type AnalysisConnection struct {
 	redis   *storages.RedisClient
 	Reports DBReports
+	scanLimitNum uint64
 }
 
 func NewAnalysisConnection(host string, port uint16, password string) (*AnalysisConnection, error) {
@@ -20,7 +21,7 @@ func NewAnalysisConnection(host string, port uint16, password string) (*Analysis
 	if err != nil {
 		return nil, err
 	}
-	return &AnalysisConnection{redis, DBReports{}}, nil
+	return &AnalysisConnection{redis, DBReports{}, 0}, nil
 }
 
 func (analysis *AnalysisConnection) Close() {
@@ -28,11 +29,20 @@ func (analysis *AnalysisConnection) Close() {
 		_ = analysis.redis.Close()
 	}
 }
+func (analysis *AnalysisConnection) SetScanNum(num uint64) {
+	if num > 0 {
+		analysis.scanLimitNum = num
+	}
+}
 
 func (analysis AnalysisConnection) Start(delimiters []string) {
 	fmt.Println("Starting analysis")
 	match := "*[" + strings.Join(delimiters, "") + "]*"
 	databases, _ := analysis.redis.GetDatabases()
+	
+	if analysis.scanLimitNum == 0 {
+		analysis.scanLimitNum = 3000
+	}
 
 	var (
 		cursor uint64
@@ -52,7 +62,7 @@ func (analysis AnalysisConnection) Start(delimiters []string) {
 		_ = analysis.redis.Select(db)
 
 		for {
-			keys, _ := analysis.redis.Scan(&cursor, match, 3000)
+			keys, _ := analysis.redis.Scan(&cursor, match, analysis.scanLimitNum)
 			fd, fp, tmp, nk := "", 0, 0, ""
 			for _, key := range keys {
 				fd, fp, tmp, nk, ttl = "", 0, 0, "", 0
